@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=adwaifeh
+Exec=adwaifeh
+Icon=org.randev.Adwaifeh
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true

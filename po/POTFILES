@@ -1,0 +1,4 @@
+data/org.randev.Adwaifeh.desktop.in
+data/org.randev.Adwaifeh.appdata.xml.in
+data/org.randev.Adwaifeh.gschema.xml
+src/window.ui
