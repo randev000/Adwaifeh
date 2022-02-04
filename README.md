@@ -1,1 +1,2 @@
-# Adwaifeh: A minimal image viewer. Written in GTK and Rust.
+# Adwaifeh
+### Adwaifeh is a minimal GTK/libadwaita image viewer written in Rust.
