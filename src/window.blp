@@ -1,0 +1,66 @@
+using Gtk 4.0;
+using Adw 1;
+
+template AdwaifehWindow : Adw.ApplicationWindow {
+    default-width: "600";
+    default-height: "300";
+    content: Gtk.WindowHandle {
+        Adw.Flap window_flap {
+            orientation: vertical;
+            transition-type: over;
+            [flap]
+            Gtk.Box {
+                orientation: vertical;
+                spacing: 6;
+
+                Gtk.HeaderBar headerbar {
+
+                    [start]
+                    Gtk.Button file_add_button {
+                        icon-name: "list-add-symbolic";
+                        action-name: "app.open-image";
+                    }
+
+                    [title]
+                    Adw.WindowTitle window_title {
+                        styles ["raised"]
+
+                    }
+
+                    [end]
+                    Gtk.MenuButton {
+                        menu-model: primary_menu;
+                        icon-name: "open-menu-symbolic";
+                    }
+
+
+                }
+            }
+
+            [content]
+            Gtk.ScrolledWindow {
+                Gtk.GestureClick click_handler{}
+                Gtk.Picture main_image {}
+            }
+        }
+    };
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("_Preferences");
+      action: "app.preferences";
+    }
+
+    item {
+      label: _("_Keyboard Shortcuts");
+      action: "win.show-help-overlay";
+    }
+
+    item {
+      label: _("_About Adwaifeh");
+      action: "app.about";
+    }
+  }
+}

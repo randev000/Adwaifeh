@@ -5,8 +5,7 @@ use libadwaita::subclass::prelude::*;
 use glib::{clone};
 use std::time::Duration;
 use crate::AdwaifehApplication;
-
-
+use std::cell::Cell;
 
 mod imp {
     use super::*;
@@ -15,24 +14,20 @@ mod imp {
     #[template(resource = "/org/randev/Adwaifeh/window.ui")]
     pub struct AdwaifehWindow {
 
+        pub menu_bool: Cell<bool>,
 
         // Template widgets
         #[template_child]
         pub main_image: TemplateChild<gtk::Picture>,
         #[template_child]
-        pub header_revealer: TemplateChild<gtk::Revealer>,
-        #[template_child]
-        pub header_overlay: TemplateChild<gtk::Overlay>,
-        #[template_child]
-        pub headerbar: TemplateChild<libadwaita::HeaderBar>,
-        #[template_child]
-        pub mouse_handler: TemplateChild<gtk::EventControllerMotion>,
-        #[template_child]
         pub click_handler: TemplateChild<gtk::GestureClick>,
         #[template_child]
-        pub drag_handler: TemplateChild<gtk::GestureDrag>,
+        pub window_flap: TemplateChild<libadwaita::Flap>,
         #[template_child]
         pub window_title: TemplateChild<libadwaita::WindowTitle>,
+        #[template_child]
+        pub headerbar: TemplateChild<gtk::HeaderBar>,
+
 
     }
 
@@ -82,72 +77,28 @@ impl AdwaifehWindow {
 
 
     fn init(&self) {
-    let imp = self.imp();
+        let imp = self.imp();
 
-    let style : libadwaita::StyleManager = libadwaita::StyleManager::default();
-    style.set_color_scheme(libadwaita::ColorScheme::ForceDark);
+        let style : libadwaita::StyleManager = libadwaita::StyleManager::default();
+        style.set_color_scheme(libadwaita::ColorScheme::ForceDark);
 
-    let headerbar = &*imp.headerbar;
-    let header_revealer = &*imp.header_revealer;
 
-    let height = headerbar.height();
-    let width = headerbar.height();
-
-    header_revealer.set_size_request(width, height);
-
-    print!("{}", header_revealer.height());
-    print!("{}", headerbar.height());
-
-    imp.mouse_handler.connect_enter(clone!(@weak self as win => move |_, _, _| {
-        win.on_headerbar_mouse_enter();
-    }),
-    );
-
-    imp.mouse_handler.connect_motion(clone!(@weak self as win => move |_, _, _| {
-        win.on_headerbar_mouse_enter();
-    }),
-    );
-
-    imp.mouse_handler.connect_leave(clone!(@weak self as win => move |_| {
-        win.on_headerbar_mouse_leave();
-    }),
-    );
-
-    imp.click_handler.connect_released(clone!(@weak self as win => move |_, _, _, _| {
-        win.on_headerbar_mouse_enter();
-    }),
-    );
-
-    imp.drag_handler.connect_begin(clone!(@weak self as win => move |_, _| {
-        win.on_headerbar_mouse_enter();
-    }),
-    );
-
-    imp.drag_handler.connect_end(clone!(@weak self as win => move |_, _| {
-        win.on_headerbar_mouse_enter();
-    }),
-    );
+        imp.click_handler.connect_released(clone!(@weak self as win => move |_, _, _,_| {
+            win.on_win_click();
+        }),
+        );
 
 
     }
 
-    fn on_headerbar_mouse_enter(&self) {
+    fn on_win_click(&self) {
         let imp = self.imp();
-        if self.is_active(){
-            imp.header_revealer.set_reveal_child(true);
-        }
-    }
-
-    fn on_headerbar_mouse_leave(&self) {
-        let imp = self.imp();
-
-        imp.header_revealer.set_reveal_child(false);
-
+        imp.window_flap.set_reveal_flap(!imp.window_flap.reveals_flap());
     }
 
     pub fn update_image(&self, image_file: &gio::File){
         let imp = self.imp();
-        imp.headerbar.set_css_classes(&["osd"]);
+
         imp.main_image.set_file(Some(image_file));
 
         let image_name = image_file.query_info(&gio::FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, gio::FileQueryInfoFlags::NONE, gio::Cancellable::NONE);

@@ -1,11 +1,24 @@
 pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
 gnome = import('gnome')
 
+
+blueprints = custom_target('blueprints',
+  input: files(
+    'window.blp',
+    'gtk/help-overlay.blp',
+  ),
+  output: '.',
+  command: [find_program('blueprint-compiler'), 'batch-compile', '@OUTPUT@', '@CURRENT_SOURCE_DIR@', '@INPUT@'],
+)
+
+
 gnome.compile_resources('adwaifeh',
   'adwaifeh.gresource.xml',
+  dependencies: blueprints,
   gresource_bundle: true,
   install: true,
   install_dir: pkgdatadir,
+
 )
 
 conf = configuration_data()
@@ -35,6 +48,7 @@ rust_sources = files(
   'main.rs',
   'window.rs',
 )
+
 
 sources = [cargo_sources, rust_sources]
 

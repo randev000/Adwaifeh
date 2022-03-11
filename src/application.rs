@@ -161,7 +161,7 @@ impl AdwaifehApplication {
                         if resp == gtk::ResponseType::Accept {
                             let file = dialog.file().unwrap();
                             this.update_image(&file);
-                            app.set_current_directory(file.parent().as_ref());
+                            //app.set_current_directory(file.parent().as_ref());
                         }
                     }),
                 );
@@ -172,11 +172,7 @@ impl AdwaifehApplication {
             })
         );
 
-        action!(
-            self,
-            "next-image",
 
-        )
     }
 
     fn setup_accels(&self) {
